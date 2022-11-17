@@ -1,6 +1,6 @@
 // Transfer from one account to the other
 
-import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, sendAndConfirmTransaction, SystemProgram, Transaction } from "@solana/web3.js";
+import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, sendAndConfirmTransaction, SystemProgram, Transaction } from "@solana/web3.js";
 import { airdrop } from "../airdrop";
 import { showBalance } from "../show_Balance";
 
@@ -8,7 +8,8 @@ import { showBalance } from "../show_Balance";
 // Transfer calls a function of a smart contract deployed on solana Blockchain
 export const transferSol = async (from: Keypair, to: PublicKey, amount: number) => {
 
-    const connection = new Connection("http://localhost:8899", "confirmed");
+    // const connection = new Connection("http://localhost:8899", "confirmed");
+    const connection = new Connection(clusterApiUrl('devnet'), "confirmed");
 
     const transaction = new Transaction();
 
@@ -47,7 +48,10 @@ console.log(secret);
 const fromKeypair = Keypair.fromSecretKey(secret);
 
 // get the publickey for the "to" address
-const toPublicKey = new PublicKey("6rwUaidSXkZMza4s2yx2wp4gDiHBfKZ2c9LqJXHTw91d");
+// const toPublicKey = new PublicKey("6rwUaidSXkZMza4s2yx2wp4gDiHBfKZ2c9LqJXHTw91d");
+
+const toSecret = Uint8Array.from([148,38,4,127,167,76,2,84,125,77,27,228,101,146,109,51,46,110,70,167,147,160,17,136,27,29,198,22,56,144,159,207,87,21,125,110,110,29,3,236,209,228,96,146,68,25,126,147,166,86,53,3,248,61,34,33,106,205,174,151,172,193,79,84]);
+const toKeypair = Keypair.fromSecretKey(toSecret);
 
 // execute function to run the above transfer function
 (async () => {
@@ -56,12 +60,12 @@ const toPublicKey = new PublicKey("6rwUaidSXkZMza4s2yx2wp4gDiHBfKZ2c9LqJXHTw91d"
     await airdrop(fromKeypair.publicKey, 5);
 
     await showBalance(fromKeypair.publicKey);
-    await showBalance(toPublicKey);
+    await showBalance(toKeypair.publicKey);
 
-    await transferSol(fromKeypair, toPublicKey, 3);
+    await transferSol(fromKeypair, toKeypair.publicKey, 3);
 
     await showBalance(fromKeypair.publicKey);
-    await showBalance(toPublicKey);
+    await showBalance(toKeypair.publicKey);
 
 
 })()

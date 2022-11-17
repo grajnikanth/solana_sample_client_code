@@ -17,7 +17,8 @@ const show_Balance_1 = require("../show_Balance");
 // class Keypair - an account keypair used for signing transactions
 // Transfer calls a function of a smart contract deployed on solana Blockchain
 const transferSol = (from, to, amount) => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = new web3_js_1.Connection("http://localhost:8899", "confirmed");
+    // const connection = new Connection("http://localhost:8899", "confirmed");
+    const connection = new web3_js_1.Connection((0, web3_js_1.clusterApiUrl)('devnet'), "confirmed");
     const transaction = new web3_js_1.Transaction();
     const instruction = web3_js_1.SystemProgram.transfer({
         fromPubkey: from.publicKey,
@@ -44,15 +45,17 @@ console.log(secret);
 // Typically used from a previously generated keypair elsewhere
 const fromKeypair = web3_js_1.Keypair.fromSecretKey(secret);
 // get the publickey for the "to" address
-const toPublicKey = new web3_js_1.PublicKey("6rwUaidSXkZMza4s2yx2wp4gDiHBfKZ2c9LqJXHTw91d");
+// const toPublicKey = new PublicKey("6rwUaidSXkZMza4s2yx2wp4gDiHBfKZ2c9LqJXHTw91d");
+const toSecret = Uint8Array.from([148, 38, 4, 127, 167, 76, 2, 84, 125, 77, 27, 228, 101, 146, 109, 51, 46, 110, 70, 167, 147, 160, 17, 136, 27, 29, 198, 22, 56, 144, 159, 207, 87, 21, 125, 110, 110, 29, 3, 236, 209, 228, 96, 146, 68, 25, 126, 147, 166, 86, 53, 3, 248, 61, 34, 33, 106, 205, 174, 151, 172, 193, 79, 84]);
+const toKeypair = web3_js_1.Keypair.fromSecretKey(toSecret);
 // execute function to run the above transfer function
 (() => __awaiter(void 0, void 0, void 0, function* () {
     // airdrop of SOL into the new wallet
     yield (0, airdrop_1.airdrop)(fromKeypair.publicKey, 5);
     yield (0, show_Balance_1.showBalance)(fromKeypair.publicKey);
-    yield (0, show_Balance_1.showBalance)(toPublicKey);
-    yield (0, exports.transferSol)(fromKeypair, toPublicKey, 3);
+    yield (0, show_Balance_1.showBalance)(toKeypair.publicKey);
+    yield (0, exports.transferSol)(fromKeypair, toKeypair.publicKey, 3);
     yield (0, show_Balance_1.showBalance)(fromKeypair.publicKey);
-    yield (0, show_Balance_1.showBalance)(toPublicKey);
+    yield (0, show_Balance_1.showBalance)(toKeypair.publicKey);
 }))();
 //# sourceMappingURL=index.js.map
